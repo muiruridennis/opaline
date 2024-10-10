@@ -1,0 +1,27 @@
+
+# Ensure class-transformer is installed locally
+npm install class-transformer
+
+# Rebuild the NestJS Docker image
+docker-compose build nestjs
+
+# Restart the NestJS Docker container
+docker-compose up -d nestjs
+
+# Common Docker commands:
+# Start all services in detached mode
+docker-compose up -d
+
+# Stop all services
+docker-compose down
+
+# View logs for a specific service (nestjs in this case)
+docker-compose logs nestjs
+
+#docker networking
+docker-compose ps
+
+# creates a database migration
+npm run typeorm:generate-migration --name=CreatePost
+
+npm run typeorm:run-migrations

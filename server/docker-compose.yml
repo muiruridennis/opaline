@@ -1,0 +1,55 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - /data/postgres:/var/lib/postgresql/data
+    env_file:
+      - docker.env
+    networks:
+      - app_network
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    env_file:
+      - docker.env
+    networks:
+      - app_network
+    depends_on:
+      - postgres
+
+  nestjs:
+    container_name: nestjs
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    image: nest-server
+    develop:
+      watch:
+        - path: ./package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: .
+          target: app
+          action: sync
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./nestjs-app:/usr/src/app 
+    networks:
+      - app_network
+    depends_on:
+      - postgres
+
+networks:
+  app_network:
+    driver: bridge
